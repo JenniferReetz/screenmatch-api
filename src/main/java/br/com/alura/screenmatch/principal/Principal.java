@@ -4,8 +4,10 @@ import br.com.alura.screenmatch.model.DadosSerie;
 import br.com.alura.screenmatch.model.DadosTemporada;
 import br.com.alura.screenmatch.model.Episodio;
 import br.com.alura.screenmatch.model.Serie;
+import br.com.alura.screenmatch.repository.SerieRepository;
 import br.com.alura.screenmatch.service.ConsumoApi;
 import br.com.alura.screenmatch.service.ConverteDados;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,14 +21,12 @@ public class Principal {
     private final String API_KEY = "&apikey=6585022c";
     private final List<DadosSerie> dadosSeries = new ArrayList<>();
 
+    public Principal(SerieRepository repository) {
+        this.repository = repository;
+    }
+
     public void exibeMenu() {
         var opcao = -1;
-//        var opcao1 = -1;
-//        String menu1 = """
-//                Digite qualquer número acima de zero para começar
-//                """;
-//        System.out.println(menu1);
-//        opcao1 = leitura.nextInt();
         while (opcao != 0){
             var menu = """
                     1 - Buscar séries
@@ -61,9 +61,13 @@ public class Principal {
 
     private void buscarSerieWeb() {
         DadosSerie dados = getDadosSerie();
-        dadosSeries.add(dados);
+//        dadosSeries.add(dados);
+        Serie serie = new Serie(dados);
+        repository.save(serie);
         System.out.println(dados);
     }
+
+    private SerieRepository repository;
 
     private DadosSerie getDadosSerie() {
         System.out.println("Digite o nome da série para busca");
@@ -86,10 +90,7 @@ public class Principal {
     }
 
     private void listarSeriesBuscadas(){
-        List<Serie> series = new ArrayList<>();
-        series = dadosSeries.stream()
-                .map(d -> new Serie(d))
-                .collect(Collectors.toList());
+        List<Serie> series = repository.findAll();
         series.stream()
                 .sorted(Comparator.comparing(Serie::getGenero))
                 .forEach(System.out::println);
