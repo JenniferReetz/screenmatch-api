@@ -14,8 +14,10 @@ public class Serie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String titulo;
+
     private Integer totalTemporadas;
     private Double avaliacao;
     @Enumerated(EnumType.STRING)
@@ -112,7 +114,7 @@ public class Serie {
     }
     @Override
     public String toString() {
-        return "¦"+ "Número da série: ["+ getId()+ "]"+
+        return "\n¦"+ "Número da série: ["+ getId()+ "]"+
                 "\n¦genero=" + genero +
                 ", ¦titulo='" + titulo  +
                 ", ¦totalTemporadas=" + totalTemporadas +
